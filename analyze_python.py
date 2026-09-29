@@ -35,47 +35,53 @@ CSV = "./data/raw/credit_risk_dataset.csv"
 
 df = pd.read_csv(CSV, sep=";", encoding="utf-8-sig")
 orig_cols = list(df.columns)
-rename = {
-    "idade": "age",
-    "renda": "income",
-    "tipo de propriedade da residência": "home_ownership",
-    "tempo de emprego": "employment_length",
-    "finalidade do empréstimo": "loan_intent",
-    "classificação do empréstimo": "loan_grade",
-    "valor do empréstimo": "loan_amount",
-    "taxa de juros do empréstimo": "interest_rate",
-    "status do empréstimo": "loan_status",
-    "Percentual da renda comprometido com o empréstimo": "loan_percent_income",
-    "histórico de inadimplência no cadastro de crédito": "cb_default_on_file",
-    "Tempo de histórico de crédito": "credit_history_length",
-}
-df = df.rename(columns=rename)
 num = [
-    "age",
-    "income",
-    "employment_length",
-    "loan_amount",
-    "interest_rate",
-    "loan_percent_income",
-    "credit_history_length",
+    "idade",
+    "renda",
+    "tempo de emprego",
+    "valor do empréstimo",
+    "taxa de juros do empréstimo",
+    "Percentual da renda comprometido com o empréstimo",
+    "Tempo de histórico de crédito",
 ]
-cat = ["home_ownership", "loan_intent", "loan_grade", "cb_default_on_file"]
-target = "loan_status"
+cat = [
+    "tipo de propriedade da residência",
+    "finalidade do empréstimo",
+    "classificação do empréstimo",
+    "histórico de inadimplência no cadastro de crédito",
+]
+target = "status do empréstimo"
+required_columns = num + cat + [target]
+missing_columns = [
+    column for column in required_columns if column not in df.columns
+]
+if missing_columns:
+    raise ValueError(f"Colunas ausentes no CSV: {', '.join(missing_columns)}")
+
 
 # qualidade
 missing = df.isna().sum().to_dict()
 duplicates = int(df.duplicated().sum())
 invalid = {
-    "age_nonpositive": int((df.age <= 0).sum()),
-    "income_nonpositive": int((df.income <= 0).sum()),
-    "employment_negative": int((df.employment_length < 0).sum()),
-    "loan_amount_nonpositive": int((df.loan_amount <= 0).sum()),
-    "interest_rate_nonpositive": int((df.interest_rate <= 0).sum()),
-    "loan_percent_income_outside_0_1": int(
-        ((df.loan_percent_income < 0) | (df.loan_percent_income > 1)).sum()
+    "idade_nao_positiva": int((df["idade"] <= 0).sum()),
+    "renda_nao_positiva": int((df["renda"] <= 0).sum()),
+    "tempo_emprego_negativo": int((df["tempo de emprego"] < 0).sum()),
+    "valor_emprestimo_nao_positivo": int(
+        (df["valor do empréstimo"] <= 0).sum()
     ),
-    "credit_history_negative": int((df.credit_history_length < 0).sum()),
-    "target_not_binary": int((~df[target].isin([0, 1])).sum()),
+    "taxa_juros_nao_positiva": int(
+        (df["taxa de juros do empréstimo"] <= 0).sum()
+    ),
+    "percentual_renda_emprestimo_fora_0_1": int(
+        (
+            (df["Percentual da renda comprometido com o empréstimo"] < 0)
+            | (df["Percentual da renda comprometido com o empréstimo"] > 1)
+        ).sum()
+    ),
+    "historico_credito_negativo": int(
+        (df["Tempo de histórico de crédito"] < 0).sum()
+    ),
+    "status_emprestimo_nao_binario": int((~df[target].isin([0, 1])).sum()),
 }
 summary = df[num].describe().round(4).to_dict()
 cardinality = {
@@ -119,14 +125,20 @@ sns.set_theme(style="whitegrid", context="notebook")
 plt.figure(figsize=(7, 4.5))
 sns.countplot(data=df, x=target, color="#2563eb")
 plt.title("Distribuição do status do empréstimo")
-plt.xlabel("Status (0 = classe 0; 1 = evento positivo)")
+plt.xlabel("Status do empréstimo (0 = classe 0; 1 = evento positivo)")
 plt.ylabel("Quantidade")
 plt.tight_layout()
 plt.savefig(f"{FIG}/01_target_distribution.png", dpi=180)
 plt.close()
 fig, axes = plt.subplots(2, 2, figsize=(12, 8))
 for ax, c in zip(
-    axes.flat, ["income", "loan_amount", "interest_rate", "loan_percent_income"]
+    axes.flat,
+    [
+        "renda",
+        "valor do empréstimo",
+        "taxa de juros do empréstimo",
+        "Percentual da renda comprometido com o empréstimo",
+    ],
 ):
     sns.boxplot(data=df, x=target, y=c, ax=ax, color="#60a5fa")
     ax.set_title(c)
@@ -142,12 +154,18 @@ plt.savefig(f"{FIG}/03_correlation.png", dpi=180)
 plt.close()
 fig, axes = plt.subplots(2, 2, figsize=(13, 9))
 for ax, c in zip(
-    axes.flat, ["loan_grade", "home_ownership", "loan_intent", "cb_default_on_file"]
+    axes.flat,
+    [
+        "classificação do empréstimo",
+        "tipo de propriedade da residência",
+        "finalidade do empréstimo",
+        "histórico de inadimplência no cadastro de crédito",
+    ],
 ):
     rates = df.groupby(c)[target].mean().sort_values(ascending=False)
     sns.barplot(x=rates.values, y=rates.index, ax=ax, color="#0f766e")
-    ax.set_title("Taxa de pagamento por " + c)
-    ax.set_xlabel("Média de loan_status")
+    ax.set_title("Taxa da classe positiva por " + c)
+    ax.set_xlabel("Média de status do empréstimo")
     ax.set_ylabel("")
 plt.tight_layout()
 plt.savefig(f"{FIG}/04_categorical_payment_rates.png", dpi=180)
@@ -274,7 +292,11 @@ plt.savefig(f"{FIG}/06_permutation_importance.png", dpi=180)
 plt.close()
 # diagnósticos de subgrupo no limiar padrão
 subgroup = {}
-for c in ["cb_default_on_file", "loan_grade", "home_ownership"]:
+for c in [
+    "histórico de inadimplência no cadastro de crédito",
+    "classificação do empréstimo",
+    "tipo de propriedade da residência",
+]:
     rows = []
     for level, g in df.loc[X_test.index].assign(_y=y_test).groupby(c):
         idx = g.index
@@ -296,7 +318,7 @@ output = {
         "rows": int(df.shape[0]),
         "columns": int(df.shape[1]),
         "original_columns": orig_cols,
-        "normalized_columns": list(df.columns),
+        "columns": list(df.columns),
         "dtypes": {c: str(t) for c, t in df.dtypes.items()},
     },
     "quality": {"missing": missing, "duplicates": duplicates, "invalid": invalid},

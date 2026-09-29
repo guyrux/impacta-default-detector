@@ -1,7 +1,20 @@
 {
   "dataset": {
     "rows": 32581,
-    "columns": 12,
+    "columns": [
+      "idade",
+      "renda",
+      "tipo de propriedade da residência",
+      "tempo de emprego",
+      "finalidade do empréstimo",
+      "classificação do empréstimo",
+      "valor do empréstimo",
+      "taxa de juros do empréstimo",
+      "status do empréstimo",
+      "Percentual da renda comprometido com o empréstimo",
+      "histórico de inadimplência no cadastro de crédito",
+      "Tempo de histórico de crédito"
+    ],
     "original_columns": [
       "idade",
       "renda",
@@ -16,64 +29,50 @@
       "histórico de inadimplência no cadastro de crédito",
       "Tempo de histórico de crédito"
     ],
-    "normalized_columns": [
-      "age",
-      "income",
-      "home_ownership",
-      "employment_length",
-      "loan_intent",
-      "loan_grade",
-      "loan_amount",
-      "interest_rate",
-      "loan_status",
-      "loan_percent_income",
-      "cb_default_on_file",
-      "credit_history_length"
-    ],
     "dtypes": {
-      "age": "int64",
-      "income": "int64",
-      "home_ownership": "str",
-      "employment_length": "float64",
-      "loan_intent": "str",
-      "loan_grade": "str",
-      "loan_amount": "int64",
-      "interest_rate": "float64",
-      "loan_status": "int64",
-      "loan_percent_income": "float64",
-      "cb_default_on_file": "str",
-      "credit_history_length": "int64"
+      "idade": "int64",
+      "renda": "int64",
+      "tipo de propriedade da residência": "str",
+      "tempo de emprego": "float64",
+      "finalidade do empréstimo": "str",
+      "classificação do empréstimo": "str",
+      "valor do empréstimo": "int64",
+      "taxa de juros do empréstimo": "float64",
+      "status do empréstimo": "int64",
+      "Percentual da renda comprometido com o empréstimo": "float64",
+      "histórico de inadimplência no cadastro de crédito": "str",
+      "Tempo de histórico de crédito": "int64"
     }
   },
   "quality": {
     "missing": {
-      "age": 0,
-      "income": 0,
-      "home_ownership": 0,
-      "employment_length": 895,
-      "loan_intent": 0,
-      "loan_grade": 0,
-      "loan_amount": 0,
-      "interest_rate": 3116,
-      "loan_status": 0,
-      "loan_percent_income": 0,
-      "cb_default_on_file": 0,
-      "credit_history_length": 0
+      "idade": 0,
+      "renda": 0,
+      "tipo de propriedade da residência": 0,
+      "tempo de emprego": 895,
+      "finalidade do empréstimo": 0,
+      "classificação do empréstimo": 0,
+      "valor do empréstimo": 0,
+      "taxa de juros do empréstimo": 3116,
+      "status do empréstimo": 0,
+      "Percentual da renda comprometido com o empréstimo": 0,
+      "histórico de inadimplência no cadastro de crédito": 0,
+      "Tempo de histórico de crédito": 0
     },
     "duplicates": 165,
     "invalid": {
-      "age_nonpositive": 0,
-      "income_nonpositive": 0,
-      "employment_negative": 0,
-      "loan_amount_nonpositive": 0,
-      "interest_rate_nonpositive": 0,
-      "loan_percent_income_outside_0_1": 0,
-      "credit_history_negative": 0,
-      "target_not_binary": 0
+      "idade_nao_positiva": 0,
+      "renda_nao_positiva": 0,
+      "tempo_emprego_negativo": 0,
+      "valor_emprestimo_nao_positivo": 0,
+      "taxa_juros_nao_positiva": 0,
+      "percentual_renda_emprestimo_fora_0_1": 0,
+      "historico_credito_negativo": 0,
+      "status_emprestimo_nao_binario": 0
     }
   },
   "descriptive_statistics": {
-    "age": {
+    "idade": {
       "count": 32581.0,
       "mean": 27.7346,
       "std": 6.3481,
@@ -83,7 +82,7 @@
       "75%": 30.0,
       "max": 144.0
     },
-    "income": {
+    "renda": {
       "count": 32581.0,
       "mean": 66074.8485,
       "std": 61983.1192,
@@ -93,7 +92,7 @@
       "75%": 79200.0,
       "max": 6000000.0
     },
-    "employment_length": {
+    "tempo de emprego": {
       "count": 31686.0,
       "mean": 4.7897,
       "std": 4.1426,
@@ -103,7 +102,7 @@
       "75%": 7.0,
       "max": 123.0
     },
-    "loan_amount": {
+    "valor do empréstimo": {
       "count": 32581.0,
       "mean": 9589.3711,
       "std": 6322.0866,
@@ -113,7 +112,7 @@
       "75%": 12200.0,
       "max": 35000.0
     },
-    "interest_rate": {
+    "taxa de juros do empréstimo": {
       "count": 29465.0,
       "mean": 11.0117,
       "std": 3.2405,
@@ -123,7 +122,7 @@
       "75%": 13.47,
       "max": 23.22
     },
-    "loan_percent_income": {
+    "Percentual da renda comprometido com o empréstimo": {
       "count": 32581.0,
       "mean": 0.1702,
       "std": 0.1068,
@@ -133,7 +132,7 @@
       "75%": 0.23,
       "max": 0.83
     },
-    "credit_history_length": {
+    "Tempo de histórico de crédito": {
       "count": 32581.0,
       "mean": 5.8042,
       "std": 4.055,
@@ -145,13 +144,13 @@
     }
   },
   "cardinality": {
-    "home_ownership": [
+    "tipo de propriedade da residência": [
       "Aluguel",
       "Financiada",
       "Outros",
       "Própria"
     ],
-    "loan_intent": [
+    "finalidade do empréstimo": [
       "Consolidação de dívidas",
       "Educação",
       "Empreendedorismo",
@@ -159,7 +158,7 @@
       "Médico",
       "Pessoal"
     ],
-    "loan_grade": [
+    "classificação do empréstimo": [
       "A",
       "B",
       "C",
@@ -168,11 +167,11 @@
       "F",
       "G"
     ],
-    "cb_default_on_file": [
+    "histórico de inadimplência no cadastro de crédito": [
       "Não",
       "Sim"
     ],
-    "loan_status": [
+    "status do empréstimo": [
       "0",
       "1"
     ]
@@ -182,43 +181,43 @@
     "1": 7108
   },
   "outliers_iqr": {
-    "age": {
+    "idade": {
       "count": 1494,
       "pct": 4.59,
       "lower": 12.5,
       "upper": 40.5
     },
-    "income": {
+    "renda": {
       "count": 1484,
       "pct": 4.55,
       "lower": -22550.0,
       "upper": 140250.0
     },
-    "employment_length": {
+    "tempo de emprego": {
       "count": 853,
       "pct": 2.62,
       "lower": -5.5,
       "upper": 14.5
     },
-    "loan_amount": {
+    "valor do empréstimo": {
       "count": 1689,
       "pct": 5.18,
       "lower": -5800.0,
       "upper": 23000.0
     },
-    "interest_rate": {
+    "taxa de juros do empréstimo": {
       "count": 6,
       "pct": 0.02,
       "lower": -0.45500000000000007,
       "upper": 21.825000000000003
     },
-    "loan_percent_income": {
+    "Percentual da renda comprometido com o empréstimo": {
       "count": 651,
       "pct": 2.0,
       "lower": -0.12000000000000002,
       "upper": 0.44000000000000006
     },
-    "credit_history_length": {
+    "Tempo de histórico de crédito": {
       "count": 1142,
       "pct": 3.51,
       "lower": -4.5,
@@ -226,118 +225,118 @@
     }
   },
   "target_rates_by_category": {
-    "home_ownership": [
+    "tipo de propriedade da residência": [
       {
-        "home_ownership": "Aluguel",
+        "tipo de propriedade da residência": "Aluguel",
         "count": 16446,
         "mean": 0.3157
       },
       {
-        "home_ownership": "Financiada",
+        "tipo de propriedade da residência": "Financiada",
         "count": 13444,
         "mean": 0.1257
       },
       {
-        "home_ownership": "Outros",
+        "tipo de propriedade da residência": "Outros",
         "count": 107,
         "mean": 0.3084
       },
       {
-        "home_ownership": "Própria",
+        "tipo de propriedade da residência": "Própria",
         "count": 2584,
         "mean": 0.0747
       }
     ],
-    "loan_intent": [
+    "finalidade do empréstimo": [
       {
-        "loan_intent": "Consolidação de dívidas",
+        "finalidade do empréstimo": "Consolidação de dívidas",
         "count": 5212,
         "mean": 0.2859
       },
       {
-        "loan_intent": "Educação",
+        "finalidade do empréstimo": "Educação",
         "count": 6453,
         "mean": 0.1722
       },
       {
-        "loan_intent": "Empreendedorismo",
+        "finalidade do empréstimo": "Empreendedorismo",
         "count": 5719,
         "mean": 0.1481
       },
       {
-        "loan_intent": "Melhoria Residencial",
+        "finalidade do empréstimo": "Melhoria Residencial",
         "count": 3605,
         "mean": 0.261
       },
       {
-        "loan_intent": "Médico",
+        "finalidade do empréstimo": "Médico",
         "count": 6071,
         "mean": 0.267
       },
       {
-        "loan_intent": "Pessoal",
+        "finalidade do empréstimo": "Pessoal",
         "count": 5521,
         "mean": 0.1989
       }
     ],
-    "loan_grade": [
+    "classificação do empréstimo": [
       {
-        "loan_grade": "A",
+        "classificação do empréstimo": "A",
         "count": 10777,
         "mean": 0.0996
       },
       {
-        "loan_grade": "B",
+        "classificação do empréstimo": "B",
         "count": 10451,
         "mean": 0.1628
       },
       {
-        "loan_grade": "C",
+        "classificação do empréstimo": "C",
         "count": 6458,
         "mean": 0.2073
       },
       {
-        "loan_grade": "D",
+        "classificação do empréstimo": "D",
         "count": 3626,
         "mean": 0.5905
       },
       {
-        "loan_grade": "E",
+        "classificação do empréstimo": "E",
         "count": 964,
         "mean": 0.6442
       },
       {
-        "loan_grade": "F",
+        "classificação do empréstimo": "F",
         "count": 241,
         "mean": 0.7054
       },
       {
-        "loan_grade": "G",
+        "classificação do empréstimo": "G",
         "count": 64,
         "mean": 0.9844
       }
     ],
-    "cb_default_on_file": [
+    "histórico de inadimplência no cadastro de crédito": [
       {
-        "cb_default_on_file": "Não",
+        "histórico de inadimplência no cadastro de crédito": "Não",
         "count": 26836,
         "mean": 0.1839
       },
       {
-        "cb_default_on_file": "Sim",
+        "histórico de inadimplência no cadastro de crédito": "Sim",
         "count": 5745,
         "mean": 0.3781
       }
     ]
   },
   "numeric_correlations_with_target": {
-    "loan_percent_income": 0.3794,
-    "interest_rate": 0.3351,
-    "income": -0.1444,
-    "loan_amount": 0.1054,
-    "employment_length": -0.0825,
-    "age": -0.0216,
-    "credit_history_length": -0.0155
+    "Percentual da renda comprometido com o empréstimo": 0.3794,
+    "taxa de juros do empréstimo": 0.3351,
+    "renda": -0.1444,
+    "valor do empréstimo": 0.1054,
+    "tempo de emprego": -0.0825,
+    "idade": -0.0216,
+    "Tempo de histórico de crédito": -0.0155
   },
   "models_test": {
     "Regressão Logística": {
@@ -472,63 +471,63 @@
   "best_model": "Random Forest",
   "permutation_importance": [
     {
-      "feature": "loan_percent_income",
+      "feature": "Percentual da renda comprometido com o empréstimo",
       "mean_decrease_auc": 0.07843,
       "std": 0.0027
     },
     {
-      "feature": "home_ownership",
+      "feature": "tipo de propriedade da residência",
       "mean_decrease_auc": 0.06381,
       "std": 0.00205
     },
     {
-      "feature": "income",
+      "feature": "renda",
       "mean_decrease_auc": 0.05112,
       "std": 0.00251
     },
     {
-      "feature": "loan_grade",
+      "feature": "classificação do empréstimo",
       "mean_decrease_auc": 0.04712,
       "std": 0.0018
     },
     {
-      "feature": "loan_intent",
+      "feature": "finalidade do empréstimo",
       "mean_decrease_auc": 0.03792,
       "std": 0.00312
     },
     {
-      "feature": "interest_rate",
+      "feature": "taxa de juros do empréstimo",
       "mean_decrease_auc": 0.01792,
       "std": 0.00137
     },
     {
-      "feature": "cb_default_on_file",
+      "feature": "histórico de inadimplência no cadastro de crédito",
       "mean_decrease_auc": 0.008,
       "std": 0.00146
     },
     {
-      "feature": "employment_length",
+      "feature": "tempo de emprego",
       "mean_decrease_auc": 0.00693,
       "std": 0.00056
     },
     {
-      "feature": "age",
+      "feature": "idade",
       "mean_decrease_auc": 0.00296,
       "std": 0.00085
     },
     {
-      "feature": "loan_amount",
+      "feature": "valor do empréstimo",
       "mean_decrease_auc": 0.00292,
       "std": 0.00075
     },
     {
-      "feature": "credit_history_length",
+      "feature": "Tempo de histórico de crédito",
       "mean_decrease_auc": -0.00016,
       "std": 0.00039
     }
   ],
   "subgroup_diagnostics": {
-    "cb_default_on_file": [
+    "histórico de inadimplência no cadastro de crédito": [
       {
         "group": "Não",
         "n": 5383,
@@ -544,7 +543,7 @@
         "recall": 0.8341
       }
     ],
-    "loan_grade": [
+    "classificação do empréstimo": [
       {
         "group": "A",
         "n": 2156,
@@ -595,7 +594,7 @@
         "recall": 1.0
       }
     ],
-    "home_ownership": [
+    "tipo de propriedade da residência": [
       {
         "group": "Aluguel",
         "n": 3248,
