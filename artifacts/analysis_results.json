@@ -1,7 +1,8 @@
 {
   "dataset": {
     "rows": 32581,
-    "columns": [
+    "columns": 12,
+    "original_columns": [
       "idade",
       "renda",
       "tipo de propriedade da residência",
@@ -15,7 +16,7 @@
       "histórico de inadimplência no cadastro de crédito",
       "Tempo de histórico de crédito"
     ],
-    "original_columns": [
+      "column_names": [
       "idade",
       "renda",
       "tipo de propriedade da residência",

@@ -318,7 +318,7 @@ output = {
         "rows": int(df.shape[0]),
         "columns": int(df.shape[1]),
         "original_columns": orig_cols,
-        "columns": list(df.columns),
+        "column_names": list(df.columns),
         "dtypes": {c: str(t) for c, t in df.dtypes.items()},
     },
     "quality": {"missing": missing, "duplicates": duplicates, "invalid": invalid},
