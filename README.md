@@ -2,7 +2,7 @@
 
 Projeto acadêmico desenvolvido para a disciplina **Data Modeling**, do curso **Tecnologia em Banco de Dados** da **Faculdade Impacta**.
 
-A equipe Data Avengers explora dados de crédito e compara modelos de classificação para analisar a variável `loan_status`.
+A equipe Data Avengers explora dados de crédito e compara modelos de classificação para analisar a variável `status do empréstimo`.
 
 ## Fonte dos dados
 
@@ -14,7 +14,7 @@ Para executar a análise, disponibilize o arquivo preparado em:
 data/raw/credit_risk_dataset.csv
 ```
 
-O script espera um CSV separado por ponto e vírgula (`;`), codificado em UTF-8 (com ou sem BOM), com os cabeçalhos em português reconhecidos pelo código. Ele renomeia esses campos para nomes em inglês durante a análise. O arquivo disponível neste projeto serve como referência do formato esperado.
+O script espera um CSV separado por ponto e vírgula (`;`), codificado em UTF-8 (com ou sem BOM), com os cabeçalhos em português usados pelo conjunto de dados. Esses nomes são mantidos ao longo da análise e na exportação intermediária. O arquivo disponível neste projeto serve como referência do formato esperado.
 
 ## Requisitos
 
@@ -50,7 +50,7 @@ A classe `1` é tratada pelo código como a classe positiva. A interpretação d
 ## Arquivos gerados
 
 - `artifacts/analysis_results.json`: métricas, estatísticas, verificações de qualidade, importância das variáveis e diagnósticos por subgrupo.
-- `data/interim/cleaned_credit_risk_dataset.csv`: CSV exportado com os nomes das colunas padronizados. A imputação usada nos modelos não é aplicada a essa exportação.
+- `data/interim/cleaned_credit_risk_dataset.csv`: CSV exportado com os nomes originais das colunas em português. A imputação usada nos modelos não é aplicada a essa exportação.
 - `figures/01_target_distribution.png`: distribuição do alvo.
 - `figures/02_numeric_by_target.png`: variáveis numéricas por classe.
 - `figures/03_correlation.png`: correlação entre variáveis numéricas e o alvo.
