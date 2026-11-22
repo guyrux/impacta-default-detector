@@ -23,16 +23,17 @@ O script espera um CSV separado por ponto e vírgula (`;`), codificado em UTF-8 
 
 ## Como executar
 
-Na raiz do projeto, instale as dependências:
+Na raiz do projeto, instale as dependências (o pacote `default_detector` é instalado também em
+desenvolvimento):
 
 ```bash
-poetry install --no-root
+poetry install
 ```
 
 Execute a análise:
 
 ```bash
-poetry run python analyze_python.py
+poetry run python -m default_detector.analyze_python
 ```
 
 ## Análises realizadas
