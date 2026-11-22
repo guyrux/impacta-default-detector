@@ -188,3 +188,10 @@ pyrightconfig.json
 
 # DATA
 data/*/*.csv
+
+# Streamlit app artifacts (modelo treinado não é versionado)
+models/*.joblib
+
+# Scripts de teste temporários
+tmp_test_*.py
+tmp_test_*.log

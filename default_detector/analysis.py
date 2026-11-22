@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import joblib
 import json
 from pathlib import Path
 from typing import Any
@@ -337,7 +338,12 @@ def build_analysis_payload(
         "best_model": modeling["best_model"],
         "permutation_importance": modeling["permutation_importance"],
         "subgroup_diagnostics": modeling["subgroup_diagnostics"],
-        "curves": modeling["curves"],
+        # Converte arrays NumPy das curvas ROC para listas, garantindo
+        # serialização em JSON (evita TypeError: ndarray is not JSON serializable).
+        "curves": [
+            (name, fpr.tolist(), tpr.tolist(), float(auc))
+            for name, fpr, tpr, auc in modeling["curves"]
+        ],
         "split": {
             "test_size": 0.2,
             "random_state": 42,
@@ -360,6 +366,132 @@ def save_analysis_payload(
         else root / "artifacts" / "analysis_results.json"
     )
     final_path.parent.mkdir(parents=True, exist_ok=True)
-    with final_path.open("w", encoding="utf-8") as handle:
+    # Grava de forma atômica: escreve em um temporário e renomeia, evitando
+    # arquivos JSON pela metade (corrompidos) se o processo falhar no meio.
+    tmp_path = final_path.with_suffix(final_path.suffix + ".tmp")
+    with tmp_path.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, ensure_ascii=False, indent=2)
+    tmp_path.replace(final_path)
     return final_path
+
+
+MODEL_FILENAME = "best_model.joblib"
+
+
+def get_model_dir(project_root: str | Path | None = None) -> Path:
+    root = get_project_root(project_root)
+    return root / "models"
+
+
+def save_model(
+    pipeline: Any,
+    project_root: str | Path | None = None,
+    filename: str = MODEL_FILENAME,
+) -> Path:
+    model_dir = get_model_dir(project_root)
+    model_dir.mkdir(parents=True, exist_ok=True)
+    path = model_dir / filename
+    joblib.dump(pipeline, path)
+    return path
+
+
+def load_model(
+    project_root: str | Path | None = None, filename: str = MODEL_FILENAME
+) -> Any:
+    path = get_model_dir(project_root) / filename
+    if not path.exists():
+        raise FileNotFoundError(f"Modelo não encontrado: {path}")
+    return joblib.load(path)
+
+
+def ensure_id_column(df: pd.DataFrame) -> pd.DataFrame:
+    """Garante uma coluna de identificador ``id`` baseada no índice do DataFrame.
+
+    O CSV de entrada não possui coluna de ID, portanto uma é criada em memória
+    (sem alterar o arquivo original) para permitir a seleção de registros.
+    """
+    df = df.copy()
+    if "id" not in df.columns:
+        df.insert(0, "id", range(len(df)))
+    return df
+
+
+def train_best_pipeline(df: pd.DataFrame) -> Any:
+    """Treina o melhor pipeline (maior ROC-AUC) sobre o dataset completo.
+
+    Retorna o Pipeline ajustado, pronto para inferência. O pré-processamento fica
+    todo dentro do Pipeline/ColumnTransformer, evitando vazamento de dados.
+    """
+    modeling = train_and_evaluate_models(df)
+    best_name = modeling["best_model"]
+
+    X = df.drop(columns=[TARGET_COLUMN])
+    y = df[TARGET_COLUMN].astype(int)
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            (
+                "num",
+                Pipeline(
+                    [
+                        ("imp", SimpleImputer(strategy="median")),
+                        ("scale", StandardScaler()),
+                    ]
+                ),
+                NUM_COLUMNS,
+            ),
+            (
+                "cat",
+                Pipeline(
+                    [
+                        ("imp", SimpleImputer(strategy="most_frequent")),
+                        ("oh", OneHotEncoder(handle_unknown="ignore")),
+                    ]
+                ),
+                CAT_COLUMNS,
+            ),
+        ]
+    )
+
+    if best_name == "Regressão Logística":
+        estimator = LogisticRegression(
+            max_iter=1500, class_weight="balanced", random_state=42
+        )
+    else:
+        estimator = RandomForestClassifier(
+            n_estimators=350,
+            min_samples_leaf=3,
+            class_weight="balanced",
+            random_state=42,
+            n_jobs=-1,
+        )
+
+    pipeline = Pipeline([("prep", preprocessor), ("model", estimator)])
+    pipeline.fit(X, y)
+    return pipeline
+
+
+def ensure_artifacts(
+    project_root: str | Path | None = None,
+) -> tuple[Path, Path]:
+    """Garante a existência do payload JSON e do modelo joblib.
+
+    Gera ``artifacts/analysis_results.json`` e ``models/best_model.joblib``
+    automaticamente quando algum deles estiver ausente.
+    """
+    root = get_project_root(project_root)
+    df = load_credit_dataset(project_root)
+    df = ensure_id_column(df)
+
+    json_path = root / "artifacts" / "analysis_results.json"
+    model_path = get_model_dir(project_root) / MODEL_FILENAME
+
+    if not json_path.exists():
+        payload = build_analysis_payload(df, project_root)
+        save_analysis_payload(payload, project_root, json_path)
+
+    if not model_path.exists():
+        pipeline = train_best_pipeline(df)
+        save_model(pipeline, project_root, MODEL_FILENAME)
+
+    return json_path, model_path

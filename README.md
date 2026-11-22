@@ -30,10 +30,27 @@ desenvolvimento):
 poetry install
 ```
 
-Execute a análise:
+Execute a análise (gera `artifacts/analysis_results.json` e as figuras em `figures/`):
 
 ```bash
 poetry run python -m default_detector.analyze_python
+```
+
+## Aplicativo Streamlit
+
+O projeto inclui um aplicativo Streamlit com duas páginas:
+
+- **Resultados** (`pages/01_resultados.py`): apresenta qualidade dos dados, estatísticas
+  descritivas, comparação de modelos, validação cruzada, visualizações e diagnósticos de
+  subgrupos, a partir de `artifacts/analysis_results.json` (gerado automaticamente se ausente).
+- **Inferência** (`pages/02_inferencia.py`): seleciona um registro da base por ID e exibe a
+  predição (classe e probabilidade) usando o modelo salvo em `models/best_model.joblib`
+  (treinado e salvo automaticamente se ausente).
+
+Execute o aplicativo:
+
+```bash
+poetry run streamlit run app.py
 ```
 
 ## Análises realizadas
