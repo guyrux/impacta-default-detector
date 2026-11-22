@@ -95,6 +95,21 @@ reprodutibilidade, métricas documentadas) em cada etapa.
 - Executar: `poetry run pytest`.
 - Testes de gráficos usam o backend `Agg` (`matplotlib.use("Agg")`).
 
+## Deploy (Streamlit Cloud)
+
+O aplicativo Streamlit é hospedado no [Streamlit Community Cloud](https://share.streamlit.io)
+a partir do repositório GitHub. Como o sistema de arquivos do cloud é efêmero e
+somente-leitura, os seguintes arquivos são versionados propositalmente (exceção à regra
+de não commitar dados):
+
+- `data/raw/credit_risk_dataset.csv`: dataset de entrada.
+- `models/best_model.joblib`: modelo treinado para inferência.
+- `artifacts/analysis_results.json`: payload de métricas e estatísticas.
+- `requirements.txt`: dependências de runtime instaladas pelo cloud.
+
+Não remova esses arquivos do versionamento sem atualizar o `app.py` e as páginas em
+`pages/`, pois o app não consegue gerá-los ou treiná-los em runtime no cloud.
+
 ## Cuidados
 
 - Regenerar `figures/` e `artifacts/` altera arquivos versionados. Só faça isso quando for
