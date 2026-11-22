@@ -57,6 +57,22 @@ def plot_target_distribution(
         ax=ax,
         legend=False,
     )
+
+    counts = df[TARGET_COLUMN].value_counts().sort_index()
+    total = int(len(df))
+    for patch, class_value in zip(ax.patches, counts.index.to_list()):
+        percentage = (counts[class_value] / total * 100) if total else 0.0
+        ax.text(
+            patch.get_x() + patch.get_width() / 2,
+            patch.get_height() * 0.5,
+            f"{percentage:.1f}%",
+            ha="center",
+            va="center",
+            color="white",
+            fontsize=10,
+            fontweight="bold",
+        )
+
     ax.set_title("Distribuição do status do empréstimo")
     ax.set_xlabel("Status do empréstimo (0 = classe 0; 1 = evento positivo)")
     ax.set_ylabel("Quantidade")
@@ -71,6 +87,7 @@ def plot_numeric_by_target(
     output_dir: str | Path | None = None,
     filename: str = "02_numeric_by_target.png",
     dpi: int = 180,
+    showfliers=True
 ) -> Path | None:
     path = _resolve_save_path(save_path, output_dir, filename)
     numeric_fields = [
@@ -92,6 +109,7 @@ def plot_numeric_by_target(
             ax=ax,
             palette=palette,
             legend=False,
+            showfliers=showfliers
         )
         ax.set_title(column)
         ax.set_xlabel("Status do empréstimo")
