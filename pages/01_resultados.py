@@ -208,13 +208,13 @@ def main() -> None:
         st.markdown("<div class='info-card'>", unsafe_allow_html=True)
         st.markdown("Distribui&ccedil;&atilde;o do alvo")
         fig = plot_target_distribution(payload["class_distribution"])
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.markdown("</div>", unsafe_allow_html=True)
     with col_corr:
         st.markdown("<div class='info-card'>", unsafe_allow_html=True)
         st.markdown("Correla&ccedil;&atilde;o de Pearson com o alvo")
         fig = plot_numeric_correlation(payload["numeric_correlations_with_target"])
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("**Taxa de inadimpl&ecirc;ncia por categoria**")
@@ -231,7 +231,7 @@ def main() -> None:
 
     st.markdown("<div class='info-card'>", unsafe_allow_html=True)
     fig = plot_categorical_rates(payload["target_rates_by_category"])
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
     st.markdown("</div>", unsafe_allow_html=True)
     st.caption("Vermelho = acima da taxa m&eacute;ria (21,8%).")
 
@@ -248,13 +248,13 @@ def main() -> None:
         st.markdown("<div class='info-card'>", unsafe_allow_html=True)
         st.markdown("M&eacute;tricas no conjunto de teste")
         fig = plot_metrics_radar(payload["models_test"], payload["best_model"])
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.markdown("</div>", unsafe_allow_html=True)
     with col_cv:
         st.markdown("<div class='info-card'>", unsafe_allow_html=True)
         st.markdown("Valida&ccedil;&atilde;o cruzada (m&eacute;dia &plusmn; desvio)")
         fig = plot_cv_summary(payload["models_cv"])
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.markdown("</div>", unsafe_allow_html=True)
 
     # Tabela comparativa
@@ -355,7 +355,7 @@ def main() -> None:
         st.markdown("<div class='info-card'>", unsafe_allow_html=True)
         st.markdown("Top 10 vari&aacute;veis por importa&ccedil;&atilde;o")
         fig = plot_permutation_importance(payload["permutation_importance"])
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.markdown("</div>", unsafe_allow_html=True)
     with col_sub:
         st.markdown("<div class='info-card'>", unsafe_allow_html=True)
@@ -367,7 +367,7 @@ def main() -> None:
             chip_html += f'<span class="tag tag-chip">{label}</span>'
         st.markdown(f'<div style="margin-bottom:10px;">{chip_html}</div>', unsafe_allow_html=True)
         fig = plot_subgroup_diagnostics(payload["subgroup_diagnostics"])
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.markdown("</div>", unsafe_allow_html=True)
     st.caption("Recall desigual entre grupos indica onde o modelo deixa passar mais inadimplentes.")
 
